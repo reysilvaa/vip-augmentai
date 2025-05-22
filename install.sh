@@ -55,7 +55,7 @@ else
     # Script is not in a scripts directory, likely a standalone installation
     PROJECT_ROOT="$( cd "$SCRIPT_DIR" && pwd )"
     STANDALONE_MODE=true
-
+    
     # Create scripts directory if it doesn't exist
     mkdir -p "$PROJECT_ROOT/scripts"
     SCRIPT_DIR="$PROJECT_ROOT/scripts"
@@ -64,19 +64,19 @@ fi
 # Check for required system dependencies
 check_dependencies() {
     log_info "Checking system dependencies..."
-
+    
     local missing_deps=()
-
+    
     # Check for common dependencies
     for cmd in sqlite3 curl jq; do
         if ! command -v "$cmd" &> /dev/null; then
             missing_deps+=("$cmd")
         fi
     done
-
+    
     if [ ${#missing_deps[@]} -ne 0 ]; then
         log_warning "Missing dependencies: ${missing_deps[*]}"
-
+        
         # Detect OS for installation instructions
         if [[ "$OSTYPE" == "darwin"* ]]; then
             log_info "To install on macOS, run: brew install ${missing_deps[*]}"
@@ -86,7 +86,7 @@ check_dependencies() {
         elif [[ "$OSTYPE" == "msys"* || "$OSTYPE" == "cygwin"* ]]; then
             log_info "To install on Windows, we recommend using Chocolatey: choco install ${missing_deps[*]}"
         fi
-
+        
         read -p "Do you want to continue anyway? (y/n) " -n 1 -r
         echo
         if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -101,19 +101,19 @@ check_dependencies() {
 # Make scripts executable
 make_scripts_executable() {
     log_info "Making scripts executable..."
-
+    
     find "$SCRIPT_DIR" -name "*.sh" -type f -exec chmod +x {} \;
-
+    
     log_success "All scripts are now executable"
 }
 
 # Setup project configuration
 setup_configuration() {
     log_info "Setting up project configuration..."
-
+    
     # Create config directory if it doesn't exist
     mkdir -p "$PROJECT_ROOT/config"
-
+    
     # Create default configuration file if it doesn't exist
     if [ ! -f "$PROJECT_ROOT/config/config.json" ]; then
         cat > "$PROJECT_ROOT/config/config.json" << EOF
@@ -134,12 +134,12 @@ EOF
 # Create necessary directories
 create_directories() {
     log_info "Creating project directories..."
-
+    
     # Create common directories
     mkdir -p "$PROJECT_ROOT/logs"
     mkdir -p "$PROJECT_ROOT/data"
     mkdir -p "$PROJECT_ROOT/temp"
-
+    
     log_success "Project directories created"
 }
 
@@ -149,19 +149,19 @@ download_scripts() {
         log_info "Running in repository mode, skipping script download"
         return 0
     fi
-
+    
     log_info "Running in standalone mode, downloading required scripts..."
-
+    
     # List of scripts to download
     local scripts=("clean_code_db.sh" "id_modifier.sh")
-
+    
     # Download each script
     for script in "${scripts[@]}"; do
         local script_url="$REPO_URL/scripts/$script"
         local script_path="$SCRIPT_DIR/$script"
-
+        
         log_info "Downloading $script..."
-
+        
         if curl -fsSL "$script_url" -o "$script_path"; then
             chmod +x "$script_path"
             log_success "Downloaded and made executable: $script"
@@ -170,7 +170,7 @@ download_scripts() {
             return 1
         fi
     done
-
+    
     log_success "All scripts downloaded successfully"
     return 0
 }
@@ -178,7 +178,7 @@ download_scripts() {
 # Run the database cleaning script
 run_clean_script() {
     log_info "Running database cleaning script..."
-
+    
     if [ -x "$SCRIPT_DIR/clean_code_db.sh" ]; then
         "$SCRIPT_DIR/clean_code_db.sh"
         log_success "Database cleaning completed"
@@ -186,14 +186,14 @@ run_clean_script() {
         log_error "Database cleaning script not found or not executable"
         return 1
     fi
-
+    
     return 0
 }
 
 # Run the telemetry ID modification script
 run_id_modifier_script() {
     log_info "Running telemetry ID modification script..."
-
+    
     if [ -x "$SCRIPT_DIR/id_modifier.sh" ]; then
         "$SCRIPT_DIR/id_modifier.sh"
         log_success "Telemetry ID modification completed"
@@ -201,7 +201,7 @@ run_id_modifier_script() {
         log_error "Telemetry ID modification script not found or not executable"
         return 1
     fi
-
+    
     return 0
 }
 
@@ -224,7 +224,7 @@ main() {
     # Parse command line arguments
     local run_clean=false
     local run_modify_ids=false
-
+    
     # If no arguments provided, just do the basic installation
     if [ $# -eq 0 ]; then
         log_info "Starting installation process for Augment VIP"
@@ -253,36 +253,36 @@ main() {
                     ;;
             esac
         done
-
+        
         log_info "Starting installation process for Augment VIP with additional options"
     fi
-
+    
     # Check dependencies
     check_dependencies
-
+    
     # Download scripts if in standalone mode
     download_scripts
-
+    
     # Make scripts executable
     make_scripts_executable
-
+    
     # Setup configuration
     setup_configuration
-
+    
     # Create directories
     create_directories
-
+    
     log_success "Installation completed successfully!"
-
+    
     # Run additional scripts if requested
     if [ "$run_clean" = true ]; then
         run_clean_script
     fi
-
+    
     if [ "$run_modify_ids" = true ]; then
         run_id_modifier_script
     fi
-
+    
     log_info "You can now use the scripts in the scripts directory"
     log_info "For example:"
     log_info "  - To clean VS Code databases: $SCRIPT_DIR/clean_code_db.sh"
