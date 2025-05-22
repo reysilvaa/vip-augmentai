@@ -274,13 +274,31 @@ main() {
 
     log_success "Installation completed successfully!"
 
-    # Run additional scripts if requested
-    if [ "$run_clean" = true ]; then
-        run_clean_script
-    fi
+    # Check if any command line options were provided
+    if [ "$run_clean" = true ] || [ "$run_modify_ids" = true ]; then
+        # Run scripts based on command line options
+        if [ "$run_clean" = true ]; then
+            run_clean_script
+        fi
 
-    if [ "$run_modify_ids" = true ]; then
-        run_id_modifier_script
+        if [ "$run_modify_ids" = true ]; then
+            run_id_modifier_script
+        fi
+    else
+        # If no command line options were provided, ask the user if they want to run the scripts
+        echo
+        read -p "Would you like to clean VS Code databases now? (y/n) " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            run_clean_script
+        fi
+
+        echo
+        read -p "Would you like to modify VS Code telemetry IDs now? (y/n) " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            run_id_modifier_script
+        fi
     fi
 
     log_info "You can now use the scripts in the scripts directory"

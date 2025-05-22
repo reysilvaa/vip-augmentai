@@ -34,6 +34,7 @@ This will:
 1. Download the installation script
 2. Make it executable
 3. Run the installation, which will download additional required scripts
+4. Prompt you if you want to run the database cleaning and telemetry ID modification scripts
 
 ### Repository Install
 
