@@ -1,3 +1,9 @@
+### Info: Use the python version for more capabalities
+You can use this one click or go to the python branch
+```bash
+curl -fsSL https://raw.githubusercontent.com/azrilaiman2003/augment-vip/python/install.sh -o install.sh && chmod +x install.sh && ./install.sh
+```
+
 # Augment VIP
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
