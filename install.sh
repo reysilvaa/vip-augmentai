@@ -53,12 +53,20 @@ if [[ "$SCRIPT_DIR" == *"/scripts" ]]; then
     STANDALONE_MODE=false
 else
     # Script is not in a scripts directory, likely a standalone installation
-    PROJECT_ROOT="$( cd "$SCRIPT_DIR" && pwd )"
     STANDALONE_MODE=true
 
-    # Create scripts directory if it doesn't exist
+    # Create a project directory for standalone installation
+    PROJECT_ROOT="$( cd "$SCRIPT_DIR" && pwd )/augment-vip"
+    log_info "Creating project directory at: $PROJECT_ROOT"
+    mkdir -p "$PROJECT_ROOT"
+
+    # Create scripts directory
     mkdir -p "$PROJECT_ROOT/scripts"
     SCRIPT_DIR="$PROJECT_ROOT/scripts"
+
+    # Copy this script to the scripts directory
+    cp "$0" "$SCRIPT_DIR/install.sh"
+    chmod +x "$SCRIPT_DIR/install.sh"
 fi
 
 # Check for required system dependencies

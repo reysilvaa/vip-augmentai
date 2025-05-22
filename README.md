@@ -33,8 +33,9 @@ curl -fsSL https://raw.githubusercontent.com/azrilaiman2003/augment-vip/main/scr
 This will:
 1. Download the installation script
 2. Make it executable
-3. Run the installation, which will download additional required scripts
-4. Prompt you if you want to run the database cleaning and telemetry ID modification scripts
+3. Create a new `augment-vip` directory in your current location
+4. Run the installation, which will download additional required scripts
+5. Prompt you if you want to run the database cleaning and telemetry ID modification scripts
 
 ### Repository Install
 
@@ -60,6 +61,10 @@ You can also run the installation script with options to automatically run the c
 ```bash
 # One-line install with all features
 curl -fsSL https://raw.githubusercontent.com/azrilaiman2003/augment-vip/main/scripts/install.sh -o install.sh && chmod +x install.sh && ./install.sh --all
+
+# After installation, you'll have an augment-vip directory
+# Navigate to it to run scripts directly:
+cd augment-vip
 
 # Or if you've already downloaded the script or cloned the repository:
 
