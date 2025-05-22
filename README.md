@@ -22,19 +22,66 @@ A utility toolkit for Augment VIP users, providing tools to manage and clean VS 
 
 ## 💻 Installation
 
-### Quick Install
+### One-Line Install
+
+You can install with a single command using curl:
 
 ```bash
-git clone https://github.com/yourusername/augment-vip.git
+curl -fsSL https://raw.githubusercontent.com/azrilaiman2003/augment-vip/main/scripts/install.sh -o install.sh && chmod +x install.sh && ./install.sh
+```
+
+This will:
+1. Download the installation script
+2. Make it executable
+3. Run the installation, which will download additional required scripts
+
+### Repository Install
+
+If you prefer to clone the entire repository:
+
+```bash
+git clone https://github.com/azrilaiman2003/augment-vip.git
 cd augment-vip
 ./scripts/install.sh
 ```
 
 The installation script will:
 1. Check for required dependencies
-2. Create necessary project directories
-3. Set up default configuration
-4. Make all scripts executable
+2. Download additional required scripts
+3. Create necessary project directories
+4. Set up default configuration
+5. Make all scripts executable
+
+### Automated Installation
+
+You can also run the installation script with options to automatically run the cleaning and ID modification scripts. This works with both the one-line and repository installation methods:
+
+```bash
+# One-line install with all features
+curl -fsSL https://raw.githubusercontent.com/azrilaiman2003/augment-vip/main/scripts/install.sh -o install.sh && chmod +x install.sh && ./install.sh --all
+
+# Or if you've already downloaded the script or cloned the repository:
+
+# Run installation and clean databases
+./install.sh --clean
+# or
+./scripts/install.sh --clean
+
+# Run installation and modify telemetry IDs
+./install.sh --modify-ids
+# or
+./scripts/install.sh --modify-ids
+
+# Run installation, clean databases, and modify telemetry IDs
+./install.sh --all
+# or
+./scripts/install.sh --all
+
+# Show help
+./install.sh --help
+# or
+./scripts/install.sh --help
+```
 
 ### Manual Installation
 
@@ -42,7 +89,7 @@ If you prefer to install manually:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/augment-vip.git
+   git clone https://github.com/azrilaiman2003/augment-vip.git
    cd augment-vip
    ```
 
@@ -160,10 +207,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📞 Contact
 
-Your Name - [@yourtwitter](https://twitter.com/yourtwitter) - email@example.com
+Azril Aiman - me@azrilaiman.my
 
-Project Link: [https://github.com/yourusername/augment-vip](https://github.com/yourusername/augment-vip)
+Project Link: [https://github.com/azrilaiman2003/augment-vip](https://github.com/azrilaiman2003/augment-vip)
 
 ---
 
-Made with ❤️ by [Your Name](https://github.com/yourusername)
+Made with ❤️ by [Azril Aiman](https://github.com/azrilaiman2003)
