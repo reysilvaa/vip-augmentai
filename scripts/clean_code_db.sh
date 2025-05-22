@@ -46,7 +46,7 @@ check_dependencies() {
 get_db_paths() {
     local os_name=$(uname -s)
     local db_paths=()
-    
+
     case "$os_name" in
         Darwin)  # macOS
             local home_dir="$HOME"
@@ -69,7 +69,7 @@ get_db_paths() {
             exit 1
             ;;
     esac
-    
+
     # Filter out non-existent paths
     local existing_paths=()
     for path in "${db_paths[@]}"; do
@@ -77,17 +77,17 @@ get_db_paths() {
             existing_paths+=("$path")
         fi
     done
-    
+
     if [ ${#existing_paths[@]} -eq 0 ]; then
         log_warning "No database files found"
         return 1
     fi
-    
+
     # Print the paths
     for path in "${existing_paths[@]}"; do
         echo "$path"
     done
-    
+
     return 0
 }
 
@@ -95,12 +95,13 @@ get_db_paths() {
 clean_db() {
     local db_path="$1"
     local app_name
-    
+
     if [[ "$db_path" == *"Code"* ]]; then
         app_name="VS Code"
-    
+    fi
+
     log_info "Processing $app_name database at: $db_path"
-    
+
     # Create backup
     local backup_path="${db_path}_backup"
     if cp "$db_path" "$backup_path"; then
@@ -109,7 +110,7 @@ clean_db() {
         log_error "Failed to create backup"
         return 1
     fi
-    
+
     # Execute SQLite command to delete records
     if sqlite3 "$db_path" "DELETE FROM ItemTable WHERE key LIKE '%augment%';"; then
         log_success "Cleaned $app_name database"
@@ -117,28 +118,28 @@ clean_db() {
         log_error "Failed to clean $app_name database"
         return 1
     fi
-    
+
     return 0
 }
 
 # Main function
 main() {
     log_info "Starting database cleanup process"
-    
+
     # Check dependencies
     check_dependencies
-    
+
     # Get database paths
     log_info "Searching for database files..."
     mapfile -t db_paths < <(get_db_paths)
-    
+
     if [ ${#db_paths[@]} -eq 0 ]; then
         log_error "No database files found to process"
         exit 1
     fi
-    
+
     log_success "Found ${#db_paths[@]} database file(s)"
-    
+
     # Process each database
     local success_count=0
     for db_path in "${db_paths[@]}"; do
@@ -146,7 +147,7 @@ main() {
             ((success_count++))
         fi
     done
-    
+
     # Summary
     if [ $success_count -eq ${#db_paths[@]} ]; then
         log_success "All databases processed successfully"
