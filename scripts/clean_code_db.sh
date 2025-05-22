@@ -9,6 +9,12 @@
 set -e  # Exit immediately if a command exits with a non-zero status
 set -u  # Treat unset variables as an error
 
+# Ensure compatibility with older Bash versions (macOS uses Bash 3.2)
+if [ -z "${BASH_VERSINFO[0]:-}" ] || [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
+    echo "Note: Running on Bash version < 4.0 (${BASH_VERSION:-unknown})"
+    echo "Some features may be limited, but the script will attempt to use compatible alternatives."
+fi
+
 # Text formatting
 BOLD="\033[1m"
 RED="\033[31m"
@@ -131,7 +137,9 @@ main() {
 
     # Get database paths
     log_info "Searching for database files..."
-    mapfile -t db_paths < <(get_db_paths)
+
+    # Use a more compatible approach for array assignment (works in Bash 3.2)
+    IFS=$'\n' read -d '' -ra db_paths < <(get_db_paths) || true
 
     if [ ${#db_paths[@]} -eq 0 ]; then
         log_error "No database files found to process"
