@@ -85,7 +85,11 @@ download_python_installer() {
     INSTALLER_URL="$REPO_URL/install.py"
     INSTALLER_PATH="$PROJECT_ROOT/install.py"
 
-    if curl -fsSL "$INSTALLER_URL" -o "$INSTALLER_PATH"; then
+    log_info "Downloading from: $INSTALLER_URL"
+    log_info "Saving to: $INSTALLER_PATH"
+
+    # Use -L to follow redirects
+    if curl -L "$INSTALLER_URL" -o "$INSTALLER_PATH"; then
         log_success "Downloaded Python installer"
     else
         log_error "Failed to download Python installer"
@@ -122,7 +126,8 @@ download_python_installer() {
 
         log_info "Downloading $file..."
 
-        if curl -fsSL "$file_url" -o "$file_path"; then
+        # Use -L to follow redirects
+        if curl -L "$file_url" -o "$file_path"; then
             log_success "Downloaded $file"
         else
             log_warning "Failed to download $file, will try to continue anyway"
@@ -147,6 +152,9 @@ run_python_installer() {
         log_error "Python installation failed"
         exit 1
     fi
+
+    # Return to the original directory
+    cd - > /dev/null
 }
 
 # Display help message
@@ -181,10 +189,42 @@ main() {
     # Download Python installer
     download_python_installer
 
-    # Run Python installer with all arguments passed to this script
-    run_python_installer "$@"
+    # Run Python installer with all arguments passed to this script plus --no-prompt
+    run_python_installer "$@" --no-prompt
 
-    log_info "You can now use Augment VIP with the commands shown above"
+    # Get the path to the augment-vip command
+    if [ "$PYTHON_CMD" = "python3" ]; then
+        AUGMENT_CMD="$PROJECT_ROOT/.venv/bin/augment-vip"
+    else
+        if [[ "$OSTYPE" == "msys"* || "$OSTYPE" == "cygwin"* ]]; then
+            AUGMENT_CMD="$PROJECT_ROOT/.venv/Scripts/augment-vip.exe"
+        else
+            AUGMENT_CMD="$PROJECT_ROOT/.venv/bin/augment-vip"
+        fi
+    fi
+
+    # Prompt user to clean database
+    echo
+    read -p "Would you like to clean VS Code databases now? (y/n) " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        log_info "Running database cleaning..."
+        "$AUGMENT_CMD" clean
+    fi
+
+    # Prompt user to modify telemetry IDs
+    echo
+    read -p "Would you like to modify VS Code telemetry IDs now? (y/n) " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        log_info "Running telemetry ID modification..."
+        "$AUGMENT_CMD" modify-ids
+    fi
+
+    log_info "You can now use Augment VIP with the following commands:"
+    log_info "  $AUGMENT_CMD clean       - Clean VS Code databases"
+    log_info "  $AUGMENT_CMD modify-ids  - Modify telemetry IDs"
+    log_info "  $AUGMENT_CMD all         - Run all tools"
 }
 
 # Execute main function

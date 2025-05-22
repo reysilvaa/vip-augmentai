@@ -39,6 +39,7 @@ This will:
 6. Set up a Python virtual environment
 7. Install the package in the virtual environment
 8. Prompt you if you want to run the database cleaning and telemetry ID modification tools
+9. Run the selected tools automatically
 
 ### Installation Options
 

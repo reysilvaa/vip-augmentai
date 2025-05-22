@@ -54,7 +54,7 @@ def check_python_version():
 def create_venv(venv_path):
     """Create a virtual environment"""
     info(f"Creating virtual environment at {venv_path}...")
-    
+
     try:
         import venv
         venv.create(venv_path, with_pip=True)
@@ -81,9 +81,9 @@ def get_venv_pip(venv_path):
 def install_package(venv_path, package_path="."):
     """Install the package in the virtual environment"""
     pip_path = get_venv_pip(venv_path)
-    
+
     info(f"Installing Augment VIP package...")
-    
+
     try:
         # Install the package in development mode
         subprocess.check_call([str(pip_path), "install", "-e", package_path])
@@ -99,11 +99,11 @@ def run_command(venv_path, command):
         script_path = venv_path / "Scripts" / f"{command}.exe"
     else:
         script_path = venv_path / "bin" / command
-    
+
     if not script_path.exists():
         error(f"Command not found: {command}")
         return False
-    
+
     try:
         subprocess.check_call([str(script_path)])
         return True
@@ -117,47 +117,47 @@ def main():
     parser.add_argument("--clean", action="store_true", help="Run database cleaning after installation")
     parser.add_argument("--modify-ids", action="store_true", help="Run telemetry ID modification after installation")
     parser.add_argument("--all", action="store_true", help="Run all tools after installation")
+    parser.add_argument("--no-prompt", action="store_true", help="Don't prompt for actions after installation")
     args = parser.parse_args()
-    
+
     info("Starting installation process for Augment VIP")
-    
+
     # Check Python version
     check_python_version()
-    
+
     # Determine the project root directory
     project_root = Path(__file__).resolve().parent
-    
+
     # Create a virtual environment
     venv_path = project_root / ".venv"
     if not create_venv(venv_path):
         sys.exit(1)
-    
+
     # Install the package
     if not install_package(venv_path, project_root):
         sys.exit(1)
-    
+
     success("Installation completed successfully!")
-    
-    # Run commands if requested
+
+    # Run commands if requested via command line arguments
     if args.clean or args.all:
         info("Running database cleaning...")
         run_command(venv_path, "augment-vip clean")
-    
+
     if args.modify_ids or args.all:
         info("Running telemetry ID modification...")
         run_command(venv_path, "augment-vip modify-ids")
-    
+
     # Print usage information
-    info("You can now use Augment VIP with the following commands:")
-    
     if platform.system() == "Windows":
-        info(f"  {venv_path}\\Scripts\\augment-vip clean")
-        info(f"  {venv_path}\\Scripts\\augment-vip modify-ids")
-        info(f"  {venv_path}\\Scripts\\augment-vip all")
+        cmd_path = f"{venv_path}\\Scripts\\augment-vip"
     else:
-        info(f"  {venv_path}/bin/augment-vip clean")
-        info(f"  {venv_path}/bin/augment-vip modify-ids")
-        info(f"  {venv_path}/bin/augment-vip all")
+        cmd_path = f"{venv_path}/bin/augment-vip"
+
+    info("You can now use Augment VIP with the following commands:")
+    info(f"  {cmd_path} clean       - Clean VS Code databases")
+    info(f"  {cmd_path} modify-ids  - Modify telemetry IDs")
+    info(f"  {cmd_path} all         - Run all tools")
 
 if __name__ == "__main__":
     main()
