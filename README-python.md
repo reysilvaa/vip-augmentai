@@ -1,9 +1,9 @@
-# Augment VIP
+# Augment VIP (Python Version)
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
 
-A utility toolkit for Augment VIP users, providing tools to manage and clean VS Code databases. Now with Python-based cross-platform compatibility!
+A utility toolkit for Augment VIP users, providing tools to manage and clean VS Code databases. This is the Python version, which offers better cross-platform compatibility and eliminates the need for external dependencies.
 
 ## 🚀 Features
 
@@ -22,50 +22,29 @@ A utility toolkit for Augment VIP users, providing tools to manage and clean VS 
 
 ## 💻 Installation
 
-### One-Line Install
+### Quick Install
 
-You can install with a single command using curl:
+Run the installer script:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/azrilaiman2003/augment-vip/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh
-```
+# On macOS/Linux
+python3 install.py
 
-This will:
-1. Download the installation script
-2. Make it executable
-3. Check for Python 3.6 or higher
-4. Create a new `augment-vip` directory in your current location
-5. Download the Python installer and package files
-6. Set up a Python virtual environment
-7. Install the package in the virtual environment
-8. Prompt you if you want to run the database cleaning and telemetry ID modification tools
+# On Windows
+python install.py
+```
 
 ### Installation Options
 
-You can also run the installation script with options to automatically run the cleaning and ID modification tools:
-
 ```bash
 # Install and run database cleaning
-curl -fsSL https://raw.githubusercontent.com/azrilaiman2003/augment-vip/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh --clean
+python install.py --clean
 
 # Install and modify telemetry IDs
-curl -fsSL https://raw.githubusercontent.com/azrilaiman2003/augment-vip/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh --modify-ids
+python install.py --modify-ids
 
 # Install and run all tools
-curl -fsSL https://raw.githubusercontent.com/azrilaiman2003/augment-vip/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh --all
-
-# Show help
-curl -fsSL https://raw.githubusercontent.com/azrilaiman2003/augment-vip/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh --help
-```
-
-### Repository Install
-
-If you prefer to clone the entire repository:
-
-```bash
-git clone https://github.com/azrilaiman2003/augment-vip.git
-cd augment-vip
-python install.py
+python install.py --all
 ```
 
 ### Manual Installation
@@ -73,10 +52,6 @@ python install.py
 If you prefer to set up manually:
 
 ```bash
-# Clone the repository
-git clone https://github.com/azrilaiman2003/augment-vip.git
-cd augment-vip
-
 # Create a virtual environment
 python -m venv .venv
 
@@ -97,7 +72,7 @@ pip install -e .
 To remove Augment-related entries from VS Code databases:
 
 ```bash
-# If using the virtual environment (recommended)
+# If using the virtual environment
 .venv/bin/augment-vip clean  # macOS/Linux
 .venv\Scripts\augment-vip clean  # Windows
 
@@ -117,7 +92,7 @@ This will:
 To change the telemetry IDs in VS Code's storage.json file:
 
 ```bash
-# If using the virtual environment (recommended)
+# If using the virtual environment
 .venv/bin/augment-vip modify-ids  # macOS/Linux
 .venv\Scripts\augment-vip modify-ids  # Windows
 
@@ -137,7 +112,7 @@ This will:
 To run both tools at once:
 
 ```bash
-# If using the virtual environment (recommended)
+# If using the virtual environment
 .venv/bin/augment-vip all  # macOS/Linux
 .venv\Scripts\augment-vip all  # Windows
 
@@ -156,8 +131,7 @@ augment-vip/
 │   ├── db_cleaner.py       # Database cleaning functionality
 │   ├── id_modifier.py      # Telemetry ID modification functionality
 │   └── utils.py            # Utility functions
-├── install.py              # Python installation script
-├── install.sh              # Bash wrapper for Python installer
+├── install.py              # Installation script
 ├── README.md               # This file
 ├── requirements.txt        # Package dependencies
 └── setup.py                # Package setup script
@@ -181,28 +155,31 @@ The database cleaning tool works by:
 
 **Python Not Found**
 ```
-[ERROR] Python 3 is not installed or not in PATH
+'python' is not recognized as an internal or external command
 ```
-Install Python 3.6 or higher:
-- Windows: Download from https://www.python.org/downloads/
-- macOS: `brew install python3` or download from https://www.python.org/downloads/
-- Ubuntu/Debian: `sudo apt install python3 python3-venv`
-- Fedora/RHEL: `sudo dnf install python3 python3-venv`
+Make sure Python is installed and added to your PATH.
 
 **Permission Denied**
 ```
-[ERROR] Permission denied
+Permission denied
 ```
-Make sure the scripts are executable:
+On macOS/Linux, you may need to make the scripts executable:
 ```bash
-chmod +x install.sh
+chmod +x install.py
 ```
 
-**No Databases Found**
+**Virtual Environment Creation Failed**
 ```
-[WARNING] No database files found
+Error: Command '['/path/to/.venv/bin/python', '-m', 'ensurepip', '--upgrade', '--default-pip']' returned non-zero exit status 1
 ```
-This may occur if you haven't used VS Code on your system, or if it's installed in non-standard locations.
+Try installing the venv module:
+```bash
+# On Ubuntu/Debian
+sudo apt install python3-venv
+
+# On Fedora/RHEL
+sudo dnf install python3-venv
+```
 
 ## 🤝 Contributing
 
