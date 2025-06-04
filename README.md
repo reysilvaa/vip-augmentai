@@ -5,6 +5,10 @@
 
 A utility toolkit for Augment VIP users, providing tools to manage and clean VS Code databases. Now with Python-based cross-platform compatibility!
 
+Tested on Mac Os Vscode
+Status : Working
+Last Tested : 4 June 2025 1:50PM GMT8+
+
 ## 🚀 Features
 
 - **Database Cleaning**: Remove Augment-related entries from VS Code databases
