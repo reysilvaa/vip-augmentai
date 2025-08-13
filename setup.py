@@ -40,10 +40,10 @@ setup(
     description="VS Code Privacy & Database Management Tools with MVC Architecture",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/reysilva/vip-augmentAI",
+    url="https://github.com/reysilva/vip-augmentai",
     project_urls={
-        "Bug Reports": "https://github.com/reysilva/vip-augmentAI/issues",
-        "Source": "https://github.com/reysilva/vip-augmentAI",
+        "Bug Reports": "https://github.com/reysilva/vip-augmentai/issues",
+        "Source": "https://github.com/reysilva/vip-augmentai",
     },
     classifiers=[
         "Development Status :: 4 - Beta",
