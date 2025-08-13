@@ -4,10 +4,13 @@
 ![Version](https://img.shields.io/badge/version-2.0.0-green.svg)
 ![Architecture](https://img.shields.io/badge/architecture-MVC-orange.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)
+![Contributors](https://img.shields.io/badge/contributors-azrilaiman%20%2B%20reysilva-purple.svg)
 
 A modern, cross-platform utility toolkit for VS Code privacy management following **Model-View-Controller (MVC)** architecture. Provides tools to manage and clean VS Code databases with a professional GUI interface.
 
-**🌟 Now supports Windows, macOS, and Linux!**
+**🌟 Now supports Windows, macOS, and Linux with automated multi-platform builds!**
+
+**👥 Collaborative Development:** Originally created by Azril Aiman, enhanced with desktop application expertise by reysilva for better cross-platform support, build automation, and user experience.
 
 ## 🏗️ Architecture Overview
 
@@ -40,8 +43,9 @@ src/
 
 ## 🚀 Features
 
-- **🖥️ Cross-Platform**: Native support for Windows, macOS, and Linux
+- **🖥️ Cross-Platform Desktop**: Native support for Windows, macOS, and Linux (enhanced by reysilva)
 - **🎨 Modern GUI Interface**: Clean, professional PySide6-based interface with sidebar layout
+- **🏗️ Multi-Platform Build System**: Automated GitHub Actions for all platforms (contributed by reysilva)
 - **🧹 Database Cleaning**: Remove Augment-related entries from VS Code databases
 - **🔐 Telemetry ID Modification**: Generate random telemetry IDs for enhanced privacy
 - **🔄 VS Code Restart**: Automatically restart VS Code after operations
@@ -49,6 +53,7 @@ src/
 - **📊 Real-time Progress**: Live operation tracking with detailed logs
 - **🏗️ MVC Architecture**: Well-structured, maintainable codebase
 - **🚀 Process Management**: Smart VS Code process detection and management
+- **📦 Single Entry Point**: Unified launcher system (simplified by reysilva)
 
 ## 📋 Requirements
 
@@ -238,12 +243,19 @@ The MVC version coexists with the legacy structure:
 6. Push to branch (`git push origin feature/amazing-feature`)
 7. Open Pull Request
 
-## 📞 Contact
+## 📞 Contact & Contributors
 
+**Original Creator:**  
 Azril Aiman - me@azrilaiman.my
 
-Project Link: [https://github.com/azrilaiman2003/augment-vip](https://github.com/azrilaiman2003/augment-vip)
+**Desktop Application Development:**  
+reysilva - Contributed to cross-platform desktop application architecture, build automation, and multi-platform distribution system
+
+**Collaboration:**  
+This project benefits from collaborative development focusing on modern desktop application practices and cross-platform compatibility.
+
+Project Link: [https://github.com/reysilvaa/vip-augmentai](https://github.com/reysilvaa/vip-augmentai)
 
 ---
 
-Made with ❤️ and proper software architecture by [Azril Aiman](https://github.com/azrilaiman2003)
+Made with ❤️ and proper software architecture by [Azril Aiman](https://github.com/azrilaiman2003) & [reysilva](https://github.com/reysilvaa)
