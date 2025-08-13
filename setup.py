@@ -36,7 +36,7 @@ setup(
     },
     python_requires=">=3.7",
     author="Reynald Silva",
-    author_email="me@azrilaiman.my",
+    author_email="reynaldsilva123@gmail.com",
     description="VS Code Privacy & Database Management Tools with MVC Architecture",
     long_description=long_description,
     long_description_content_type="text/markdown",
