@@ -203,11 +203,37 @@ class VSCodeService:
     def is_vscode_running(self) -> bool:
         """Check if VS Code is currently running"""
         try:
-            for proc in psutil.process_iter(['pid', 'name']):
-                if proc.info['name'] and 'code' in proc.info['name'].lower():
-                    # Check for various VS Code process names
-                    if any(name in proc.info['name'].lower() for name in ['code.exe', 'code', 'vscode']):
-                        return True
+            system = platform.system().lower()
+            
+            for proc in psutil.process_iter(['pid', 'name', 'exe']):
+                proc_name = proc.info['name']
+                if not proc_name:
+                    continue
+                
+                proc_name_lower = proc_name.lower()
+                
+                # Cross-platform VS Code process detection
+                if system == "windows":
+                    # Windows: Code.exe, code.exe
+                    vscode_names = ['code.exe', 'code-tunnel.exe', 'code-insiders.exe']
+                elif system == "darwin":
+                    # macOS: Electron, Code, Visual Studio Code
+                    vscode_names = ['code', 'visual studio code', 'electron']
+                    # Check executable path for VS Code app bundle
+                    try:
+                        exe_path = proc.info.get('exe', '')
+                        if exe_path and 'visual studio code' in exe_path.lower():
+                            return True
+                    except (psutil.NoSuchProcess, psutil.AccessDenied):
+                        pass
+                else:
+                    # Linux: code, code-insiders, code-oss
+                    vscode_names = ['code', 'code-insiders', 'code-oss', 'codium', 'vscodium']
+                
+                # Check if process name matches any VS Code variant
+                if any(name in proc_name_lower for name in vscode_names):
+                    return True
+                    
             return False
         except Exception:
             return False
@@ -215,25 +241,52 @@ class VSCodeService:
     def close_vscode(self) -> bool:
         """Close all VS Code processes"""
         try:
+            system = platform.system().lower()
             closed_processes = []
-            for proc in psutil.process_iter(['pid', 'name']):
-                if proc.info['name'] and 'code' in proc.info['name'].lower():
-                    if any(name in proc.info['name'].lower() for name in ['code.exe', 'code', 'vscode']):
+            
+            for proc in psutil.process_iter(['pid', 'name', 'exe']):
+                proc_name = proc.info['name']
+                if not proc_name:
+                    continue
+                    
+                proc_name_lower = proc_name.lower()
+                is_vscode_process = False
+                
+                # Cross-platform VS Code process detection
+                if system == "windows":
+                    vscode_names = ['code.exe', 'code-tunnel.exe', 'code-insiders.exe']
+                    is_vscode_process = any(name in proc_name_lower for name in vscode_names)
+                elif system == "darwin":
+                    vscode_names = ['code', 'visual studio code', 'electron']
+                    is_vscode_process = any(name in proc_name_lower for name in vscode_names)
+                    # Check executable path for VS Code app bundle
+                    if not is_vscode_process:
                         try:
-                            proc.terminate()
-                            closed_processes.append(proc.info['pid'])
-                        except psutil.NoSuchProcess:
+                            exe_path = proc.info.get('exe', '')
+                            if exe_path and 'visual studio code' in exe_path.lower():
+                                is_vscode_process = True
+                        except (psutil.NoSuchProcess, psutil.AccessDenied):
                             pass
-                        except psutil.AccessDenied:
-                            try:
-                                proc.kill()
-                                closed_processes.append(proc.info['pid'])
-                            except:
-                                pass
+                else:
+                    vscode_names = ['code', 'code-insiders', 'code-oss', 'codium', 'vscodium']
+                    is_vscode_process = any(name in proc_name_lower for name in vscode_names)
+                
+                if is_vscode_process:
+                    try:
+                        proc.terminate()
+                        closed_processes.append(proc.info['pid'])
+                    except psutil.NoSuchProcess:
+                        pass
+                    except psutil.AccessDenied:
+                        try:
+                            proc.kill()
+                            closed_processes.append(proc.info['pid'])
+                        except:
+                            pass
             
             # Wait for processes to close
             if closed_processes:
-                time.sleep(2)
+                time.sleep(3 if system == "darwin" else 2)
                 
             return len(closed_processes) > 0
         except Exception:
@@ -242,8 +295,7 @@ class VSCodeService:
     def start_vscode(self, workspace_path: Optional[str] = None) -> bool:
         """Start VS Code with optional workspace"""
         try:
-            if not self.vscode_model.paths:
-                return False
+            system = platform.system().lower()
             
             # Get VS Code executable path
             exe_path = self.vscode_model.get_executable_path()
@@ -255,11 +307,25 @@ class VSCodeService:
             if workspace_path:
                 cmd.append(workspace_path)
             
-            # Start VS Code
-            if platform.system() == "Windows":
+            # Start VS Code with platform-specific settings
+            if system == "windows":
                 subprocess.Popen(cmd, shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
-            else:
+            elif system == "darwin":
+                # macOS: Use 'open' command for .app bundles, or direct execution
+                if str(exe_path).endswith('.app'):
+                    cmd = ['open', str(exe_path)]
+                    if workspace_path:
+                        cmd.extend(['--args', workspace_path])
                 subprocess.Popen(cmd, shell=False)
+            else:
+                # Linux: Direct execution with environment
+                env = None
+                # Set DISPLAY if not set (for GUI apps)
+                import os
+                if 'DISPLAY' not in os.environ and 'WAYLAND_DISPLAY' not in os.environ:
+                    env = os.environ.copy()
+                    env['DISPLAY'] = ':0'
+                subprocess.Popen(cmd, shell=False, env=env)
             
             return True
         except Exception:

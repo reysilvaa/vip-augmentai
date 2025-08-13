@@ -1,10 +1,13 @@
-# Augment VIP - MVC Architecture
+# Augment VIP - Cross-Platform MVC Architecture
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
+![Version](https://img.shields.io/badge/version-2.0.0-green.svg)
 ![Architecture](https://img.shields.io/badge/architecture-MVC-orange.svg)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)
 
-A modern, well-structured utility toolkit for Augment VIP users following **Model-View-Controller (MVC)** architecture. Provides tools to manage and clean VS Code databases with a professional GUI interface.
+A modern, cross-platform utility toolkit for VS Code privacy management following **Model-View-Controller (MVC)** architecture. Provides tools to manage and clean VS Code databases with a professional GUI interface.
+
+**🌟 Now supports Windows, macOS, and Linux!**
 
 ## 🏗️ Architecture Overview
 
@@ -37,46 +40,88 @@ src/
 
 ## 🚀 Features
 
-- **Modern GUI Interface**: Clean, professional PySide6-based interface with sidebar layout
-- **Database Cleaning**: Remove Augment-related entries from VS Code databases
-- **Telemetry ID Modification**: Generate random telemetry IDs for enhanced privacy
-- **Cross-Platform Support**: Works on Windows, macOS, and Linux
-- **Safe Operations**: Automatic backups before making changes
-- **Real-time Progress**: Live operation tracking with detailed logs
-- **MVC Architecture**: Well-structured, maintainable codebase
+- **🖥️ Cross-Platform**: Native support for Windows, macOS, and Linux
+- **🎨 Modern GUI Interface**: Clean, professional PySide6-based interface with sidebar layout
+- **🧹 Database Cleaning**: Remove Augment-related entries from VS Code databases
+- **🔐 Telemetry ID Modification**: Generate random telemetry IDs for enhanced privacy
+- **🔄 VS Code Restart**: Automatically restart VS Code after operations
+- **🛡️ Safe Operations**: Automatic backups before making changes
+- **📊 Real-time Progress**: Live operation tracking with detailed logs
+- **🏗️ MVC Architecture**: Well-structured, maintainable codebase
+- **🚀 Process Management**: Smart VS Code process detection and management
 
 ## 📋 Requirements
 
-- Python 3.6 or higher
-- PySide6 (Qt for Python)
-- VS Code installation
+- **Python 3.6+** (any platform)
+- **PySide6** (Qt for Python) - GUI framework  
+- **psutil** - Cross-platform process management
+- **VS Code installation** (Windows/macOS/Linux)
 
 ## 💻 Installation & Usage
 
-### Quick Start - GUI Application
+### 🚀 Super Simple - One Entry Point
 
+**Just run this on any platform:**
 ```bash
-# Clone repository
-git clone https://github.com/azrilaiman2003/augment-vip.git
-cd augment-vip
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run MVC application
-python main_mvc.py
+python main.py
 ```
 
-### Building Executable
+### 🏗️ Build Executables
 
-```bash
-# Build standalone executable
-pyinstaller augment_vip_mvc.spec
+**Windows/Mac/Linux (Local Build):**
+```cmd
+# Windows
+build.bat
 
-# Run executable
-dist/AugmentVIP_MVC.exe  # Windows
-dist/AugmentVIP_MVC      # macOS/Linux
+# Mac/Linux  
+./build.sh
 ```
+
+**ALL PLATFORMS (GitHub Actions):**
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+✅ Automatically builds Windows `.exe`, macOS `.app`, Linux binary  
+✅ Download from GitHub Releases  
+✅ Zero setup needed!
+
+### 📦 Building Executables
+
+**Windows:**
+```cmd
+build_gui.bat
+```
+
+**macOS/Linux:**
+```bash
+chmod +x build_gui.sh
+./build_gui.sh
+```
+
+The executable will be created in the `dist/` folder:
+- **Windows**: `dist/AugmentVIP.exe`
+- **macOS**: `dist/AugmentVIP.app` (double-click to run)
+- **Linux**: `dist/AugmentVIP` (executable binary)
+
+## 🖥️ Platform Support
+
+### ✅ Supported Platforms
+
+| Platform | Architecture | VS Code Detection | Process Management | Build Support |
+|----------|-------------|-------------------|-------------------|---------------|
+| **Windows 10/11** | x64, x86 | ✅ AppData paths | ✅ Process control | ✅ .exe |
+| **macOS 10.14+** | Intel, Apple Silicon | ✅ Library paths | ✅ Process control | ✅ .app bundle |
+| **Ubuntu 18.04+** | x64, ARM64 | ✅ .config paths | ✅ Process control | ✅ Binary |
+| **Debian 10+** | x64, ARM64 | ✅ .config paths | ✅ Process control | ✅ Binary |
+| **CentOS/RHEL 7+** | x64 | ✅ .config paths | ✅ Process control | ✅ Binary |
+| **Arch Linux** | x64 | ✅ .config paths | ✅ Process control | ✅ Binary |
+
+### 🔍 VS Code Variants Supported
+- **VS Code** (Microsoft)
+- **VS Code Insiders**
+- **VSCodium** (Open Source)
+- **Code - OSS**
 
 ### Legacy CLI Support
 

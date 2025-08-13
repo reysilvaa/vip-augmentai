@@ -1,44 +1,117 @@
 #!/bin/bash
 
-echo "Building Augment VIP GUI Executable..."
+echo "🚀 ONE-CLICK BUILD - Augment VIP Multi-Platform"
+echo "==============================================="
+echo "Building executable for all platforms from one script!"
 echo
 
-# Check if virtual environment exists
-if [ ! -d ".venv" ]; then
-    echo "Creating virtual environment..."
-    python3 -m venv .venv
+# Detect Python command
+if command -v python3 &> /dev/null; then
+    PYTHON_CMD="python3"
+    PIP_CMD="pip3"
+elif command -v python &> /dev/null; then
+    PYTHON_CMD="python"
+    PIP_CMD="pip"
+else
+    echo "❌ Python not found! Please install Python first."
+    exit 1
 fi
 
-# Activate virtual environment
-echo "Activating virtual environment..."
-source .venv/bin/activate
+# Detect OS for output
+OS=$(uname -s)
+case $OS in
+    "Darwin") PLATFORM="macOS" ;;
+    "Linux") PLATFORM="Linux" ;;
+    *) PLATFORM="Unix-like" ;;
+esac
 
-# Install dependencies
-echo "Installing dependencies..."
-pip install --upgrade pip
-pip install -r requirements.txt
+echo "🖥️  Platform: $PLATFORM"
+echo "🐍 Python: $PYTHON_CMD"
 
-# Build executable
-echo "Building executable with PyInstaller..."
-pyinstaller --clean augment_vip.spec
+echo "🧹 Cleaning previous builds..."
+rm -rf dist build releases
+
+echo "📦 Installing/updating dependencies..."
+$PIP_CMD install --upgrade pip
+$PIP_CMD install --upgrade pyinstaller>=5.0 PySide6>=6.0 psutil click
+
+echo "🏗️ Building executable for $PLATFORM..."
+
+# Build command with platform-specific options
+if [[ "$OS" == "Darwin" ]]; then
+    # macOS - create .app bundle
+    pyinstaller --clean --noconfirm \
+        --onefile \
+        --windowed \
+        --name AugmentVIP \
+        --add-data "src:src" \
+        --add-data "requirements.txt:." \
+        --hidden-import PySide6.QtCore \
+        --hidden-import PySide6.QtGui \
+        --hidden-import PySide6.QtWidgets \
+        --hidden-import psutil \
+        --hidden-import click \
+        main.py
+    
+    EXECUTABLE="dist/AugmentVIP"
+    RELEASE_FILE="AugmentVIP_macOS"
+else
+    # Linux - create binary
+    pyinstaller --clean --noconfirm \
+        --onefile \
+        --windowed \
+        --name AugmentVIP \
+        --add-data "src:src" \
+        --add-data "requirements.txt:." \
+        --hidden-import PySide6.QtCore \
+        --hidden-import PySide6.QtGui \
+        --hidden-import PySide6.QtWidgets \
+        --hidden-import psutil \
+        --hidden-import click \
+        main.py
+    
+    EXECUTABLE="dist/AugmentVIP"
+    RELEASE_FILE="AugmentVIP_Linux"
+    
+    # Make executable
+    chmod +x "$EXECUTABLE"
+fi
 
 if [ $? -eq 0 ]; then
     echo
-    echo "================================"
-    echo "Build completed successfully!"
-    echo "Executable location: dist/AugmentVIP"
-    echo "================================"
+    echo "🎉 BUILD SUCCESS!"
+    echo "================"
+    echo "✅ Executable created: $EXECUTABLE"
+    echo "✅ Ready to distribute on $PLATFORM"
+    echo "✅ Self-contained - no dependencies needed"
+    echo
+    echo "� USAGE:"
+    echo "  • Run GUI: $PYTHON_CMD main.py"
+    echo "  • Run CLI: $PYTHON_CMD cli.py"
+    echo "  • Run EXE: $EXECUTABLE"
     echo
     
-    # Ask if user wants to run the executable
-    read -p "Do you want to run the executable now? (y/n): " run_exe
+    # Create simple release structure
+    mkdir -p releases
+    cp "$EXECUTABLE" "releases/"
+    
+    echo "📦 Release ready in: releases/"
+    echo
+    
+    # Ask to run
+    read -p "🎯 Run the executable now? (y/n): " run_exe
     if [[ "$run_exe" =~ ^[Yy]$ ]]; then
-        echo "Running executable..."
-        ./dist/AugmentVIP
+        echo "Starting AugmentVIP..."
+        if [[ "$OS" == "Darwin" ]]; then
+            open "$EXECUTABLE" || "./$EXECUTABLE" &
+        else
+            "./$EXECUTABLE" &
+        fi
     fi
 else
     echo
-    echo "================================"
-    echo "Build failed! Check the error messages above."
-    echo "================================"
+    echo "❌ BUILD FAILED! Check errors above."
+    echo "You can still run: $PYTHON_CMD main.py"
 fi
+
+echo

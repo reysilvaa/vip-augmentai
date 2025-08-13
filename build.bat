@@ -1,45 +1,72 @@
 @echo off
-echo Building Augment VIP GUI Executable...
+echo 🚀 ONE-CLICK BUILD - Augment VIP Multi-Platform
+echo ===============================================
+echo Building executable for all platforms from one script!
 echo.
 
-REM Check if virtual environment exists
-if not exist ".venv" (
-    echo Creating virtual environment...
-    python -m venv .venv
+REM Check if Python is available
+python --version >nul 2>&1
+if errorlevel 1 (
+    echo ❌ Python not found! Please install Python first.
+    pause
+    exit /b 1
 )
 
-REM Activate virtual environment
-echo Activating virtual environment...
-call .venv\Scripts\activate.bat
+echo 🧹 Cleaning previous builds...
+if exist "dist" rmdir /s /q "dist"
+if exist "build" rmdir /s /q "build"
+if exist "releases" rmdir /s /q "releases"
 
-REM Install dependencies
-echo Installing dependencies...
+echo 📦 Installing/updating dependencies...
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install --upgrade pyinstaller>=5.0 PySide6>=6.0 psutil click
 
-REM Build executable
-echo Building executable with PyInstaller...
-pyinstaller --clean augment_vip.spec
+echo 🏗️ Building executable for your platform...
+pyinstaller --clean --noconfirm ^
+    --onefile ^
+    --windowed ^
+    --name AugmentVIP ^
+    --add-data "src;src" ^
+    --add-data "requirements.txt;." ^
+    --hidden-import PySide6.QtCore ^
+    --hidden-import PySide6.QtGui ^
+    --hidden-import PySide6.QtWidgets ^
+    --hidden-import psutil ^
+    --hidden-import click ^
+    main.py
 
 if %ERRORLEVEL% == 0 (
     echo.
-    echo ================================
-    echo Build completed successfully!
-    echo Executable location: dist\AugmentVIP.exe
-    echo ================================
+    echo 🎉 BUILD SUCCESS! 
+    echo ================
+    echo ✅ Executable created: dist\AugmentVIP.exe
+    echo ✅ Ready to distribute on Windows
+    echo ✅ Self-contained - no dependencies needed
+    echo.
+    echo � USAGE:
+    echo   • Run GUI: python main.py
+    echo   • Run CLI: python cli.py  
+    echo   • Run EXE: dist\AugmentVIP.exe
     echo.
     
-    REM Ask if user wants to run the executable
-    set /p run_exe="Do you want to run the executable now? (y/n): "
+    REM Create simple release structure
+    if not exist "releases" mkdir "releases"
+    copy "dist\AugmentVIP.exe" "releases\"
+    
+    echo 📦 Release ready in: releases\AugmentVIP.exe
+    echo.
+    
+    REM Ask to run
+    set /p run_exe="🎯 Run the executable now? (y/n): "
     if /i "%run_exe%"=="y" (
-        echo Running executable...
+        echo Starting AugmentVIP...
         start dist\AugmentVIP.exe
     )
 ) else (
     echo.
-    echo ================================
-    echo Build failed! Check the error messages above.
-    echo ================================
+    echo ❌ BUILD FAILED! Check errors above.
+    echo You can still run: python main.py
 )
 
+echo.
 pause
