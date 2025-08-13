@@ -20,12 +20,15 @@ jobs:
           - os: windows-latest
             platform: windows
             executable: AugmentVIP.exe
+            output_name: Windows.exe
           - os: macos-latest
             platform: macos
             executable: AugmentVIP
+            output_name: macOS
           - os: ubuntu-latest
             platform: linux
             executable: AugmentVIP
+            output_name: Linux
 
     steps:
     - uses: actions/checkout@v4
@@ -50,15 +53,21 @@ jobs:
       run: |
         pyinstaller --clean --noconfirm --onefile --windowed --name AugmentVIP --add-data "src:src" --hidden-import PySide6.QtCore --hidden-import PySide6.QtGui --hidden-import PySide6.QtWidgets --hidden-import psutil --hidden-import click main.py
     
+    - name: Prepare release file
+      run: |
+        mkdir -p release
+        cp "dist/${{ matrix.executable }}" "release/${{ matrix.output_name }}"
+      shell: bash
+    
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: AugmentVIP-${{ matrix.platform }}
-        path: dist/${{ matrix.executable }}
+        name: ${{ matrix.platform }}-build
+        path: release/${{ matrix.output_name }}
     
     - name: Release
       if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v2
       with:
-        files: dist/${{ matrix.executable }}
+        files: release/${{ matrix.output_name }}
         generate_release_notes: true
