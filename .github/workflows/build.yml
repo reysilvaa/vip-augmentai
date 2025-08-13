@@ -26,7 +26,7 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Setup Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
     
@@ -46,7 +46,7 @@ jobs:
         pyinstaller --clean --noconfirm --onefile --windowed --name AugmentVIP --add-data "src:src" --hidden-import PySide6.QtCore --hidden-import PySide6.QtGui --hidden-import PySide6.QtWidgets --hidden-import psutil --hidden-import click main.py
     
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: AugmentVIP-${{ matrix.platform }}
         path: dist/${{ matrix.executable }}
