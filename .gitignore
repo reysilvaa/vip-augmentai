@@ -20,7 +20,7 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
-.github/*
+.github/copilot-instruction.md
 
 # Virtual Environment
 .venv/

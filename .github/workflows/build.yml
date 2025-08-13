@@ -1,0 +1,60 @@
+name: Multi-Platform Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            platform: windows
+            executable: AugmentVIP.exe
+          - os: macos-latest
+            platform: macos
+            executable: AugmentVIP
+          - os: ubuntu-latest
+            platform: linux
+            executable: AugmentVIP
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install pyinstaller>=5.0 PySide6>=6.0 psutil click
+    
+    - name: Build Windows
+      if: matrix.platform == 'windows'
+      run: |
+        pyinstaller --clean --noconfirm --onefile --windowed --name AugmentVIP --add-data "src;src" --hidden-import PySide6.QtCore --hidden-import PySide6.QtGui --hidden-import PySide6.QtWidgets --hidden-import psutil --hidden-import click main.py
+    
+    - name: Build macOS/Linux
+      if: matrix.platform != 'windows'
+      run: |
+        pyinstaller --clean --noconfirm --onefile --windowed --name AugmentVIP --add-data "src:src" --hidden-import PySide6.QtCore --hidden-import PySide6.QtGui --hidden-import PySide6.QtWidgets --hidden-import psutil --hidden-import click main.py
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: AugmentVIP-${{ matrix.platform }}
+        path: dist/${{ matrix.executable }}
+    
+    - name: Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist/${{ matrix.executable }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
